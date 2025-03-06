@@ -16,7 +16,7 @@ namespace Demo.Data.Models
         public int Code { get; set; }
 
         [Column(TypeName = "varchar")]
-        [StringLength(50, MinimumLength = 10)]                    
+        [StringLength(50, MinimumLength = 10)]
         [Length(10, 50)]
         public string? Name { get; set; }
 
@@ -43,8 +43,12 @@ namespace Demo.Data.Models
 
         [NotMapped]
         public double NetSalary { get { return Salary - (Salary * .2); } }
-
-
+        //OR
         public double GetNetSalary => Salary - (Salary * .2);
+        
+        ///Navigational Property [One]
+        ///EF Core By default will know that there is OneToOne Relationship between "Employee-Department"
+        ///Employee [May] manage one department [Partial Participation]
+        public Department? ManagedDepartment { get; set; }
     }
 }
