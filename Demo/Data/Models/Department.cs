@@ -68,6 +68,6 @@ namespace Demo.Data.Models
         public int DeptManagerId { get; set; }
         public Employee Manager { get; set; } = null!;
 
-        public Address DeptAddress { get; set; }
+        //public Address DeptAddress { get; set; }
     }
 }
