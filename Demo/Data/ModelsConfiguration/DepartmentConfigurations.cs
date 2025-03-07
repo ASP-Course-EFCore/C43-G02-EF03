@@ -42,6 +42,16 @@ namespace Demo.Data.ModelsConfiguration
             //          .IsRequired(true);
 
             //department.OwnsOne<Address>(D => D.DeptAddress, Address => Address.WithOwner());
+
+            ///Map The [Works] relationship between Employee - Department
+            ///
+            //department.HasMany<Employee>(D => D.Employees)
+            //          .WithOne(E => E.EmployeeDepartment)
+            //          .HasForeignKey(E => E.DepartmentId)
+            //          .IsRequired()//Not has meaning because there is no thing in DB say that Department Must has Employees, So it will not mapped.
+            //                      //This mean At least one Employee Per Department
+            //          .OnDelete(DeleteBehavior.NoAction);
+        
         }
     }
 }

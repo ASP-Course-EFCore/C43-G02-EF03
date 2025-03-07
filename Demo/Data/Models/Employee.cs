@@ -45,15 +45,24 @@ namespace Demo.Data.Models
         public double NetSalary { get { return Salary - (Salary * .2); } }
         //OR
         public double GetNetSalary => Salary - (Salary * .2);
-        
+
         ///Navigational Property [One]
         ///EF Core By default will know that there is OneToOne Relationship between "Employee-Department"
         ///Employee [May] manage one department [Partial Participation]
+        [InverseProperty(nameof(Department.Manager))]
         public Department? ManagedDepartment { get; set; }
 
         ///Navigational Property [One Address] - Employee must has one Address
         ///EF Core By default will know that there is OneToOne Relationship between "Employee-Address"
         ///Employee [Must] Has one Address [Total Participation]
         public Address EmpAddress { get; set; }
+
+        [ForeignKey(nameof(EmployeeDepartment))]//To Specify that this property "DepartmentId" will be the "FK" in this relationship/NavigationalProperty "EmployeeDepartment"
+        public int DepartmentId { get; set; }//"FK" refer to the "PK" "DeptId" in department Table.
+
+        ///Navigational Property [One (Department)] - Employee must Work in One Department
+        ///Employee [Must] Work in one Department [Total Participation]
+        [InverseProperty(nameof(Department.Employees))]
+        public Department EmployeeDepartment { get; set; } = null!;
     }
 }

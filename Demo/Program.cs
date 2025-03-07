@@ -68,7 +68,7 @@ namespace Demo
             #endregion
 
             #region Part 07 Mapping OneToOne Relationship [Mandatory- Mandatory]
-            
+
             ///Ex => An "Employee" [Has] One "Address" and each "address" must assigned to One "Employee" 
             ///
             ///Mapping of [One-One] Relationship [Mandatory-Mandatory] =>
@@ -145,6 +145,57 @@ namespace Demo
             ///Because Address is owned by only one instance of entity.
             ///
             ///Summary => Don't Make DbSet for Owned Entity [Not Right Approach]
+
+            #endregion
+
+            #region Part 08 Mapping OneToMany Relationship [Many Mandatory]
+            
+            ///Means That each record in first table is associated with many records in second table
+            ///Ex => An "Employee" Must [Works] in a "Department", And a "Department" Must has many Employees
+            ///Many Side is Mandatory => 
+            ///So Take "PK" column of the One Entity And Put it As "FK" column in the Many Entity.
+            ///Take "PK" column of "Department" table as "FK" column in "Employee" table.
+            ///
+            ///How to make this ? [By Convention(Navigational Properties) - Data Annotations - Fluent APIs]
+            ///
+            ///01 - By Convention
+            ///      -By Make Navigational property inside the Employee Class represent the [One] side.
+            ///                  public Department EmployeeDepartment { get; set; } = null!;
+            ///      -And Make Navigational property inside the Department class represent the [Many] side.
+            ///                  public ICollection<Employee> Employees { get; set; } = null!;
+            ///
+            ///      -We use ICollection<T> interface because it has some methods and properties which i need like Add-Remove-Count-...
+            ///      -We Add-Remove-.. from the Navigational property but it by default not loaded 
+            ///      -So when i load it => like if i hold Department with Id=10,
+            ///      -The "Employees" Navigational property which of type ICollection<Employee> will contain All Employees that in the department with id = 10
+            ///      -So Throw/from This Collection which contain Employees in the department with id =10 , i can Add new Employee in this department throw this Navigational property.
+            ///      -So i make this property of type ICollection<T> to let me use those methods [Add-Remove-Count] which is not in another interface or class.
+            ///
+            ///After This => You "optionally" need To Specify the Relationship "FK" to tell us the "FK" column will be in which side?
+            ///It will be in the Side [Many] because in "One-Many && Many is mandatory"
+            ///We take "PK" of one as "FK" in Many.
+            ///So we will take "PK" column of "Department" as "FK" column in "Employee"
+            ///And Name it as => "NavigationalPropertyName + PKColumnName" => "EmployeeDepartmentDeptId".
+            ///
+            ///If you don't specify the "FK" column, The EF Core Will understand the relationship
+            ///But You can't access this "FK" column from the APP.
+            ///Because you don't has the "FK" column inside the Employee table mean that you can't know the department which this employee attach to
+            ///You must first load the all department throw the navigational property "EmployeeDepartment" inside the "Employee" class.
+            ///
+            ///Recommendation => Specify the "FK" column to have Access on it and can control the data of another table.
+            ///
+            ///If you need to name the "FK" column with specific name not like the Conventions Names
+            ///Use [Data Annotations] Or [Fluent APIs] to do this.
+            ///
+            ///Note => If there are more than one relationship between two classes
+            ///Use Data Annotations [ForeignKey()] to specify the "FK" of each relationship [Navigational Property]. 
+            ///And Also You need to use Annotation [InverseProperty()] to specify the inverse Navigational property of this Navigational property [Make This in two sides/classes]
+            ///
+            ///If you need to make Additional configuration on the relationship use the Fluent APIs Way.
+            ///
+            ///Note=> If You make the relationship -> IsRequired() in one of the Entities of the relationship.
+            ///Mean that the "FK" can't be null
+            ///And OnDelete() behavior will be cascade.
 
             #endregion
 

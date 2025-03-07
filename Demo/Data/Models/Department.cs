@@ -59,6 +59,7 @@ namespace Demo.Data.Models
     //}
 
     ///By Fluent APIs
+    ///
     class Department
     {
         public int DeptId { get; set; }
@@ -66,8 +67,16 @@ namespace Demo.Data.Models
         public DateOnly DateOfCreation { get; set; }
         public int Serial { get; set; }
         public int DeptManagerId { get; set; }
+
+        [InverseProperty(nameof(Employee.ManagedDepartment))]
         public Employee Manager { get; set; } = null!;
 
         //public Address DeptAddress { get; set; }
+
+        ///Navigational Property [Many (Employee)] - Department must Has Many Employees Works in it.
+        ///Department [Must] Has Many Employees Works in it [Total Participation]
+        [InverseProperty(nameof(Employee.EmployeeDepartment))]
+        public ICollection<Employee> Employees { get; set; } = null!;//Develop Against Interface "ICollection<Employee>" not specific class
+                                                                     //This Reference "Employees" could refer to any object from class implement the ICollection<Employee> interface.
     }
 }
