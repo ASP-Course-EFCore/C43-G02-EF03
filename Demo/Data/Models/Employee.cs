@@ -50,5 +50,10 @@ namespace Demo.Data.Models
         ///EF Core By default will know that there is OneToOne Relationship between "Employee-Department"
         ///Employee [May] manage one department [Partial Participation]
         public Department? ManagedDepartment { get; set; }
+
+        ///Navigational Property [One Address] - Employee must has one Address
+        ///EF Core By default will know that there is OneToOne Relationship between "Employee-Address"
+        ///Employee [Must] Has one Address [Total Participation]
+        public Address EmpAddress { get; set; }
     }
 }

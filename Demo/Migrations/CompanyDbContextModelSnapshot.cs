@@ -83,7 +83,7 @@ namespace Demo.Migrations
 
                     b.HasKey("Code");
 
-                    b.ToTable("Employees");
+                    b.ToTable("Employees", (string)null);
                 });
 
             modelBuilder.Entity("Demo.Data.Models.Department", b =>

@@ -16,6 +16,7 @@ namespace Demo.Data.DbContexts
 
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Department> Departments { get; set; }
+        //public DbSet<Address> Addresses { get; set; }
 
         #endregion
 
@@ -38,6 +39,7 @@ namespace Demo.Data.DbContexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration<Department>(new DepartmentConfigurations());
+            modelBuilder.ApplyConfiguration<Employee>(new EmployeeConfiguration());
 
             ///Configure the relationship between [Employee-Department] in case you represent the navigational properties in the 2 classes
             ///RelationShip [Manage] Configuration between Employee-Department Classes.
@@ -48,6 +50,11 @@ namespace Demo.Data.DbContexts
                         .HasForeignKey<Department>(D => D.DeptManagerId)//Specify the "FK" "DeptManagerId" inside "Department" class.
                         .OnDelete(DeleteBehavior.NoAction)//To Change the default behavior from "Cascade" to "NoAction".
                         .IsRequired(true);//Make the column of relationship required.
+            
+            ///Map "One-One && Mandatory-Mandatory" Relationship between [Employee - Address]
+            ///
+            //modelBuilder.Entity<Employee>()
+            //            .OwnsOne<Address>(E => E.EmpAddress, Address => Address.WithOwner());
 
             ///Or Configure the relationship from another side.
             ///

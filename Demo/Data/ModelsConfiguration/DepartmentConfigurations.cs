@@ -41,7 +41,7 @@ namespace Demo.Data.ModelsConfiguration
             //          .OnDelete(DeleteBehavior.NoAction)
             //          .IsRequired(true);
 
-
+            //department.OwnsOne<Address>(D => D.DeptAddress, Address => Address.WithOwner());
         }
     }
 }
