@@ -1,6 +1,7 @@
 ﻿using Demo.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Reflection.Emit;
 
 namespace Demo
 {
@@ -149,7 +150,7 @@ namespace Demo
             #endregion
 
             #region Part 08 Mapping OneToMany Relationship [Many Mandatory]
-            
+
             ///Means That each record in first table is associated with many records in second table
             ///Ex => An "Employee" Must [Works] in a "Department", And a "Department" Must has many Employees
             ///Many Side is Mandatory => 
@@ -198,6 +199,65 @@ namespace Demo
             ///And OnDelete() behavior will be cascade.
 
             #endregion
+
+            #region Part 09 Mapping ManyToMany Relationship
+
+            ///Means That many records in first table i associated with many records in second table.
+            ///Ex => "Student" [Enroll] In Many "Courses" And "Course" has Many "Students".
+            ///Mapping of it is make new third table and take "PK" of each table as "FK" in the new table
+            ///And The 2 "FK" are composite Primary Key.
+            ///
+            ///We will make Navigational Property Represent Student Take Many Courses inside Student Table
+            ///   public ICollection<Course> Courses { get; set; } = new HashSet<Course>();
+            ///
+            ///And make Navigational Property Represent Course Has Many Students inside Course Table
+            ///   public ICollection<Student> Students { get; set; } = new HashSet<Student>();
+            ///
+            ///So Now EF Core Will understand that there is Many-Many Relationship between Student-Course
+            ///And Make New Table "CourseStudent" Represent the relationship but you can't access this table because it not has representation in the APPLICATION.
+            ///This New Table "CourseStudent" has [PK of Student Table] and [PK of Course Table] As Foreign Keys and both are Composite "PK" of this table
+            /// [CoursesId - StudentsId]
+            ///
+            ///This Relationship is OnDelete Cascade
+            ///So if the Id of course in "Courses" table deleted - will delete Ids of courses in "CourseStudents" table.
+            ///And if the Id of Student in "Students" table deleted - will delete Ids of Students in "CourseStudents" table.
+            ///
+            ///Use this way if you don't need to deal with the Relationship table 
+            ///If you don't need to Make CRUD on it.
+            ///Because using this way, you don't have entity called "CourseStudent" in the APP
+            ///Mean that you can't use LINQ Operators against it.
+            ///
+            ///If you Have Many-Many Relationship And Have The 2 models only in APP and don't have the new table of relationship
+            ///And need to use the Fluent APIs => The Only thing that you will do 
+            ///Is Change The Name Of the new Generated Relationship Table As You need to be not like when use Convention Way "CourseStudent".
+            ///By configure the relationship between Student-Course In "OnModelCreating()" in "DbContext" class
+            ///By Fluent APIs =>
+            ///   modelBuilder.Entity<Student>()
+            ///              .HasMany<Course>(S => S.Courses)
+            ///              .WithMany(C => C.Students)
+            ///              .UsingEntity(NewTable => NewTable.ToTable("Stud_Courses","dbo"))
+            ///
+            ///
+            ///But still you can't deal with this new table "Stud_Courses" and Make CRUD on it and can't configure it to put constraint on it using Fluent APIs because it's not exist in APP.
+            ///
+            ///
+            ///So I need to represent this third table in the APP To Deal with it.
+            ///Many-Many Relationship Represented in Database as One-Many & One-Many
+            ///Course[one] - StudentCourses [M]
+            ///Student[one] - StudentCourses [M]
+            ///And Also if there is an Attribute on the relationship like "Grade",
+            ///You must represent the Third Table In The App to Add this Attribute As Column in the 3rd table.
+            ///
+            ///StudentCourses Table will has ->
+            ///"PK" of the Student Table as "FK"
+            ///"PK" of the Course Table as "FK"
+            ///Navigational Property of type Student represent that this "StudentCourses" has one student
+            ///Navigational Property of type Course represent that this "StudentCourses" has one Course
+            ///And on other side ->
+            ///Course has Navigational property of type "ICollection<StudentCourses> CourseStudents" represent that course has many CourseStudents.
+            ///Student has Navigational property of type "ICollection<StudentCourses> StudentCourses" represent that Student has many StudentCourses.
+
+            #endregion 
 
         }
     }

@@ -17,6 +17,9 @@ namespace Demo.Data.DbContexts
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Department> Departments { get; set; }
         //public DbSet<Address> Addresses { get; set; }
+        public DbSet<Student> Students { get; set; }
+        public DbSet<Course> Courses { get; set; }
+        public DbSet<StudentCourses> StudentCourses { get; set; }
 
         #endregion
 
@@ -50,7 +53,7 @@ namespace Demo.Data.DbContexts
                         .HasForeignKey<Department>(D => D.DeptManagerId)//Specify the "FK" "DeptManagerId" inside "Department" class.
                         .OnDelete(DeleteBehavior.NoAction)//To Change the default behavior from "Cascade" to "NoAction".
                         .IsRequired(true);//Make the column of relationship required.
-            
+
             ///Map "One-One && Mandatory-Mandatory" Relationship between [Employee - Address]
             ///
             //modelBuilder.Entity<Employee>()
@@ -73,6 +76,39 @@ namespace Demo.Data.DbContexts
             //            .HasOne<Department>()
             //            .WithOne()
             //            .HasForeignKey<Department>(D => D.DeptManagerId);
+
+            ///Configure the relationship between [ Student-Course M-M ] in case you not represent the Third Table [Relationship Table] in App.
+            ///And Need to Add This new table with specific name not like the Convention "CourseStudent".
+            //modelBuilder.Entity<Student>()
+            //            .HasMany<Course>(S => S.Courses)
+            //            .WithMany(C => C.Students)
+            //            .UsingEntity(NewTable => NewTable.ToTable("Stud_Courses"));
+
+
+            ///To Specify the composite key of this entity by Fluent APIs.
+            ///
+            //modelBuilder.Entity<StudentCourses>()
+            //            .HasKey(SC => new { SC.StdId, SC.CrsId });
+
+            ///Configure the relationship between [ Student-Course M-M ] as one-many & one-many
+            ///
+            //Student - StudentCourse
+            modelBuilder.Entity<Student>()
+                        .HasMany<StudentCourses>(S => S.StudentCourses)
+                        .WithOne(SC => SC.Student)
+                        .HasForeignKey(SC => SC.StdId)
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();//FK "StdId" can't be assigned with null.
+            
+            //Course - StudentCourse
+            modelBuilder.Entity<Course>()
+                        .HasMany<StudentCourses>(C => C.CourseStudents)
+                        .WithOne(SC => SC.Course)
+                        .HasForeignKey(SC => SC.CrsId)
+                        .IsRequired();//FK "CrsId" can't be assigned with null - Student must take course.
+
+
+
         }
 
         #endregion
